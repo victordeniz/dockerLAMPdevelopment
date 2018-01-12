@@ -4,7 +4,7 @@ FROM php:7.2.1-fpm
 RUN set -ex; \
 	\
 	apt-get update; \
-	apt-get install -y \
+	apt-get install -y git zip unzip \
 		libjpeg-dev #\
 #		libpng12-dev \
 #                libmcrypt-dev \
@@ -19,6 +19,8 @@ RUN set -ex; \
         && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
         && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini; 
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -42,7 +44,7 @@ RUN { \
         echo 'log_errors = On'; \
         echo 'display_errors = Off'; \
         echo 'include_path = ".:/usr/share/php:/usr/local/apache2/htdocs/ws_engine"'; \
-    } > /usr/local/etc/php/php.ini
+    } > /usr/local/etc/php/php.ini	
 
 CMD ["php-fpm"]
 EXPOSE 9000
